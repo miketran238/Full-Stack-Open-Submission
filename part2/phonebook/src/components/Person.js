@@ -1,7 +1,10 @@
-import React from 'react'
-const Person = ({person}) => {
-    return (
-        <p>{person.name} {person.number}</p>
-    )
-}
-export default Person
+// import React from 'react'
+// import personService from '../services/personsService'
+
+// const Person = ({person}) => {
+
+//     return (
+        
+//     )
+// }
+// export default Person
