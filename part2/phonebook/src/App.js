@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import personService from './services/personsService'
-
+import './App.css'
 const DisplayPhoneBook =({nameFilter, handleNewFilter}) => {
   return (
     <>
@@ -10,6 +10,29 @@ const DisplayPhoneBook =({nameFilter, handleNewFilter}) => {
       <input value={nameFilter} onChange={handleNewFilter} />
     </div>
     </>
+  )
+}
+const Error = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="error">
+      {message}
+    </div>
+  )
+}
+
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="notification">
+      {message}
+    </div>
   )
 }
 
@@ -37,6 +60,8 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ nameFilter, setNewFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [notification, setNotification] = useState('')
 
   useEffect(() => {
     personService
@@ -63,6 +88,12 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
+        setNotification(
+          `${returnedPerson.name} is successfully added`
+        )
+        setTimeout(() => {
+          setNotification(null)
+        }, 3000)
       })
 
     }
@@ -75,8 +106,22 @@ const App = () => {
         setPersons(persons.map(note => note.id !== existPerson.id ? note : returnedNote))
         setNewName('')
         setNewNumber('')
+        setNotification(
+          `${changedPerson.name} 's number is successfully changed`
+        )
+        setTimeout(() => {
+          setNotification(null)
+        }, 3000)
       })
-
+      .catch(() => {
+        setErrorMessage(
+          `${changedPerson.name} 's information has been removed from the server`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 3000)
+        personService.getAll().then(initialNotes => {setPersons(initialNotes)})
+      })
       }
     }
     
@@ -102,7 +147,14 @@ const App = () => {
       .getAll()
       .then(initialNotes => {
         setPersons(initialNotes)
-      })})
+        setNotification(
+          `'${person.name}' is successfully deleted`
+        )
+        setTimeout(() => {
+          setNotification(null)
+        }, 3000)
+      }
+      )})
       
     }
 }
@@ -114,6 +166,9 @@ const App = () => {
   return (
     <div>
       <DisplayPhoneBook nameFilter={nameFilter} handleNewFilter={handleNewFilter} />
+      <br />
+      {errorMessage ? <Error message={errorMessage} /> : <></> }
+      {notification ? <Notification message={notification} /> : <></> }
       <AddNewPerson addPerson={addPerson} newName={newName} newNumber={newNumber}
                     handleNewName={handleNewName} handleNewNumber={handleNewNumber} />
       
