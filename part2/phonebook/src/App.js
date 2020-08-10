@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import personService from './services/personsService'
 import './App.css'
+
 const DisplayPhoneBook =({nameFilter, handleNewFilter}) => {
   return (
     <>
